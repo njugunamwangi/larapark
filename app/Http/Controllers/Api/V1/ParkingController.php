@@ -41,6 +41,11 @@ class ParkingController extends Controller
 
     public function stop(Parking $parking)
     {
+        if($parking->stop_time) {
+            return response()->json(['errors' => ['general' => ['Parking already stopped.']], ]
+            , Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $parking->update([
             'stop_time' => now(),
             'total_price' => ParkingPriceService::calculatePrice($parking->zone_id, $parking->start_time),
